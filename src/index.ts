@@ -33,6 +33,11 @@ api.get("/game", (req, res) => {
 
 })
 
+// GET reqeust for api info
+api.get("/", (_, res) => {
+  res.send("OK")
+})
+
 // POST request for creating a new game
 api.post("/game", (_, res) => {
 
@@ -44,4 +49,7 @@ api.post("/game", (_, res) => {
 
 // Start http server
 const port = process.env.LISTING_PORT || 3000
-server.listen(port)
+
+server.listen(port, () => {
+  console.log("[Server] started listening...")
+})
