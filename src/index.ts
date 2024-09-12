@@ -13,7 +13,7 @@ const api = express()
 const server = createServer(api)
 
 // Init websocket instance
-const io = new Server(server, {})
+const io = new Server(server, {path: "/ws"})
 
 // Init GameManager
 const gm = new GameManager(io)
@@ -21,11 +21,11 @@ const gm = new GameManager(io)
 // Register API Events
 
 // GET Request for checking if Game for GID exists
-api.get("/game", (req, res) => {
+api.get("/api/game", (req, res) => {
 
   const gid = req.query.gid as UUID;
 
-  if (!gid) res.status(402).send("GID is not specified");
+  if (!gid) res.status(400).send("GID is not specified");
 
   else if (!gm.doesGameExist(gid)) res.status(404).send("Game does not exist");
 
@@ -33,13 +33,8 @@ api.get("/game", (req, res) => {
 
 })
 
-// GET reqeust for api info
-api.get("/", (_, res) => {
-  res.send("OK")
-})
-
 // POST request for creating a new game
-api.post("/game", (_, res) => {
+api.post("/api/game", (_, res) => {
 
   const gid = gm.createNewGame();
 
