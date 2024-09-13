@@ -47,21 +47,37 @@ export class GameManager {
     // Create new namespace for game sockets
     const nsp = this.#io.of("/" + gid)
 
-    // Register connect event
+    // Register connect event for namespace
     nsp.on("connection", (socket) => {
 
-      // Register join event, only callable once per connection attempt
+      // Register join event, only callable once per socket
       socket.once("join", (data: { uid?: UUID, name?: string }, res) => {
 
         const uid = data.uid || randomUUID()
 
-        // Add/Set player status - if first join set admin
-        this.#state[gid].players[uid] = {
-          name: data.name,
-          connected: true,
-          admin: firstJoin
-        }
+        // Check if player is new
+        if (this.#state[gid].players[uid] === undefined) {
 
+          // If new & not allowed to join, cancel
+          if (this.#state[gid].game.state !== "lobby") {
+            res("can't join anymore")
+            return
+          }
+
+          // Add player to game - if first join set admin
+          this.#state[gid].players[uid] = {
+            name: data.name,
+            connected: true,
+            admin: firstJoin
+          }
+
+        } else {
+
+          // If player reconnects, set connection status
+          this.#state[gid].players[uid].connected = true
+
+        }
+        
         // Add socket to its own room (for individual communication)
         socket.join(uid)
 
