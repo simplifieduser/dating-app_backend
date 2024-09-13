@@ -94,17 +94,26 @@ export class GameManager {
         // if admin, register change game mode event
         if (firstJoin) {
           socket.on("change_mode", (newMode) => {
-            //TODO: CHeck if newMode is valid
+
+            //TODO: Check if newMode is valid
+
+            // Notify clients about state change
             this.#state[gid].game.mode = newMode
             nsp.emit("state_changed", this.#state[gid])
+
           })
         }
 
         // if admin, register start game event
         if (firstJoin) {
           socket.on("start_game", () => {
+
+            // Notify clients about state change
             this.#state[gid].game.state = "game"
             nsp.emit("state_changed", this.#state[gid])
+
+            //TODO: Startup new game instance for specified game mode
+
           })
         }
 
