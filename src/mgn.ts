@@ -105,6 +105,9 @@ export class GameManager {
           // Disconnect socket
           socket.disconnect(true)
 
+          // Notify clients about state change
+          nsp.emit("state_changed", this.#state[gid])
+
         })
 
         // if admin, register change game mode event
@@ -132,6 +135,9 @@ export class GameManager {
 
           })
         }
+
+        // Notify clients about state change
+        nsp.emit("state_changed", this.#state[gid])
 
         // Return info
         res({ uid: uid, admin: firstJoin })
